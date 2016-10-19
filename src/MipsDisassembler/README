@@ -1,0 +1,10 @@
+Here are some notes while learning this project
+
+#base ten
+ten = 10
+
+#base two
+two = 0b10 (2)
+
+#base 16
+hex = 0x10 (16)
