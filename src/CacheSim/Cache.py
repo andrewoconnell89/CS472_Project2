@@ -3,11 +3,26 @@
 from CacheSim.CacheRow import CacheRow
 
 class Cache(object):
+    """
+    Cache object simulates the running cache with several methods
+
+        getAddressValue(self, address)
+            returns value of data at given address
+
+        checkCache(self,address)
+            checks to see if given address is in the cache
+
+        insertBlock((self, cacheRowObject)
+            insert given cacheRow into cache at appropiate row
+
+        updateData(self, address, value)
+            updated given address with new data value
+    """
 
     def __init__(self, size):
         self.slots = []  #creates the 16 slows 0-F
         for row in range(size):
-            self.slots.append(CacheRow(row))
+            self.slots.append(CacheRow(slot=row))
 
     def getAddressValue(self,address):
         '''Returns the value at the specified address '''
@@ -42,6 +57,21 @@ class Cache(object):
         else:
             return False
 
+    def isDirty(self,address):
+        '''checks to see if cacheRow is dirty or not'''
+        #Get Slot number
+        slotMASK = 0b000011110000
+        slot = (slotMASK & address) >> 4
+        return self.slots[slot].dirty
+
+    def getBlock(self,address):
+        '''returns current cache row object that is associated
+        with the current slot of the given address'''
+        #Get Slot number
+        slotMASK = 0b000011110000
+        slot = (slotMASK & address) >> 4
+        return self.slots[slot]
+
     def insertBlock(self, cacheRowObject):
         '''Inset the new cache row to it's appropiate slot tags label as well as the
         valid bit set to 1 '''
@@ -58,7 +88,10 @@ class Cache(object):
         offset = (offsetMASK & address)
         #print('Offset: ' + str(offset))
 
+        #Adds new datavalue as specified slot and offest
+        #sets dirty bit to True
         self.slots[slot].data[offset] = value
+        self.slots[slot].dirty = True
 
     def __str__(self):
         header = '{0:>6}'+\
@@ -73,5 +106,5 @@ class Cache(object):
 
 
         for row in self.slots:
-            toReturn += str(row)+'\n'
+            toReturn += str(row)+str(row.dirty)+'\n'
         return toReturn

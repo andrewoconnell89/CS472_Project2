@@ -3,6 +3,7 @@
 from CacheSim.CacheRow import CacheRow
 
 class MainMemory(object):
+
     def __init__(self, size):
         self.size = size
 
@@ -24,7 +25,10 @@ class MainMemory(object):
 
         addressSlot =  (0b000011110000 & address) >> 4
         addressTag =   (0b111100000000 & address) >> 8
-        cr = CacheRow(16, slot=addressSlot, tag=addressTag, valid=1)
+        cr = CacheRow(  slot=addressSlot,
+                        tag=addressTag,
+                        valid=1,
+                        dirty=False)
 
         cursor = startMem
         for i in range(len(cr.data)):
@@ -32,8 +36,20 @@ class MainMemory(object):
             cursor += 0b000000000001
         return cr
 
+    def writeBlock(self,cacheRowObject):
+        '''writes a cache block back to memory '''
+
+        addressSlot =  cacheRowObject.slot << 4
+        addressTag =   cacheRowObject.tag << 8
+        startMem = addressTag | addressSlot
+
+        cursor = startMem
+        for i in range(len(cacheRowObject.data)):
+            self.mm[cursor] = cacheRowObject.data[i]
+            cursor += 0b000000000001
+
     def getData(self,address):
-        '''Return the value of the byte in the given address ''' 
+        '''Return the value of the byte in the given address '''
         return self.mm[address]
 
     def display(self):

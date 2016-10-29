@@ -2,19 +2,22 @@
 
 class CacheRow(object):
     """This contains the information in each row of cache."""
-    def __init__(self, slotNumber, **kwargs):
-        self.slot = slotNumber
+    def __init__(self, **kwargs):
+        self.slot = 99
         self.valid = 0
         self.tag = 0
         self.data = [0]*16
+        self.dirty = False
 
-        #If Class is created with kwargs
+        #Fill in from kwargs
         if kwargs.get('slot') is not None:
             self.slot = kwargs.get('slot')
         if kwargs.get('valid') is not None:
             self.valid = kwargs.get('valid')
         if kwargs.get('tag') is not None:
             self.tag = kwargs.get('tag')
+        if kwargs.get('dirty') is not None:
+            self.dirty = kwargs.get('dirty')
 
     def __str__(self):
         result =   '{0:>6x}'+\

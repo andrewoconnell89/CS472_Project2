@@ -11,13 +11,22 @@ class SystemMemoryManager(object):
         self.cache = Cache(16)
 
     def read(self,address):
-        '''Method returns the value in the given address.  It will check to see
-        if the address is a hit in the cache and if not load it into the cache. '''
+        '''Method returns the value in the given address.  It will
+        check to see if the address is a hit in the cache and if not
+        load it into the cache. '''
+
         if self.cache.checkCache(address):
-            print("HIT")
+            print('HIT {0:x}'.format(address))
             return self.cache.getAddressValue(address)
         else:
-            print("MISS")
+            print('MISS {0:x}'.format(address))
+
+            #Write Back to main Memory if current row is dirty
+            if self.cache.isDirty(address):
+                print("CACHE DIRTY Writing back to MM")
+                cacheBlock = self.cache.getBlock(address)
+                self.memory.writeBlock(cacheBlock)
+
             newRow = self.memory.getBlock(address)
             self.cache.insertBlock(newRow)
 
@@ -29,10 +38,18 @@ class SystemMemoryManager(object):
         value: can not be larger than 8 bits'''
 
         if self.cache.checkCache(address):
-            print("HIT")
+            print('HIT {0:x}'.format(address))
             self.cache.updateData(address, value)
+
         else:
-            print("MISS")
+            print('MISS {0:x}'.format(address))
+
+            #Write Back to main Memory if current row is dirty
+            if self.cache.isDirty(address):
+                print("CACHE DIRTY Writing back to MM")
+                cacheBlock = self.cache.getBlock(address)
+                self.memory.writeBlock(cacheBlock)
+
             newRow = self.memory.getBlock(address)
             self.cache.insertBlock(newRow)
             self.cache.updateData(address, value)
