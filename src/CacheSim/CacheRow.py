@@ -1,7 +1,14 @@
 # Designed by Andy OConnell <aoconnel@bu.edu> <andrewoconnell89@gmail.com>
 
 class CacheRow(object):
-    """This contains the information in each row of cache."""
+    """This represents a row of cache.
+    Instance Variables
+        Slot : middle 4 bits
+        Valid : If the row is real data
+        Tag : left 4 Bits
+        Data : 16 Bytes of information from memory
+        Dirty : is true if any data has been changed
+    """
     def __init__(self, **kwargs):
         self.slot = 99
         self.valid = 0
@@ -23,8 +30,8 @@ class CacheRow(object):
         result =   '{0:>6x}'+\
                     '{1:>6}'+\
                     '{2:>6x}'+\
-                    '{3:>10x}'+\
-                    '{4:>3x}'+\
+                    '{3:>6}'+\
+                    '{4:>10x}'+\
                     '{5:>3x}'+\
                     '{6:>3x}'+\
                     '{7:>3x}'+\
@@ -38,11 +45,13 @@ class CacheRow(object):
                     '{15:>3x}'+\
                     '{16:>3x}'+\
                     '{17:>3x}'+\
-                    '{18:>3x}'
+                    '{18:>3x}'+\
+                    '{19:>3x}'
 
         result = result.format( self.slot,
                                 self.valid,
                                 self.tag,
+                                self.dirty,
                                 self.data[0],
                                 self.data[1],
                                 self.data[2],

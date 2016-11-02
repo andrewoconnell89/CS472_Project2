@@ -20,13 +20,17 @@ class Cache(object):
     """
 
     def __init__(self, size):
-        self.slots = []  #creates the 16 slows 0-F
+        self.slots = []
+
+        #creates the 16 slows 0-F
         for row in range(size):
             self.slots.append(CacheRow(slot=row))
 
     def getAddressValue(self,address):
         '''Returns the value at the specified address '''
-        pass
+        slot = (0b000011110000 & address) >> 4
+        offset = (0b000000001111 & address)
+        return self.slots[slot].data[offset]
 
     def checkCache(self,address):
         '''Check the current Cache to see if there is a cache hit for a given
@@ -94,11 +98,12 @@ class Cache(object):
         self.slots[slot].dirty = True
 
     def __str__(self):
-        header = '{0:>6}'+\
+        header = '\n{0:>6}'+\
                 '{1:>6}'+\
                 '{2:>6}'+\
-                '{3:>10}\n'
-        toReturn = header.format('Slot','Valid','Tag','Data')
+                '{3:>6}'+\
+                '{4:>10}\n'
+        toReturn = header.format('Slot','Valid','Tag', 'Dirty', 'Data')
         toReturn += '---------------'+\
                     '----------------'+\
                     '----------------'+\
@@ -106,5 +111,5 @@ class Cache(object):
 
 
         for row in self.slots:
-            toReturn += str(row)+str(row.dirty)+'\n'
+            toReturn += str(row)+'\n'
         return toReturn

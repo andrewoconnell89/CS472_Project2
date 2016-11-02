@@ -14,21 +14,21 @@ class SystemMemoryManager(object):
         '''Method returns the value in the given address.  It will
         check to see if the address is a hit in the cache and if not
         load it into the cache. '''
-
+        print('\nREAD {0:x}'.format(address))
         if self.cache.checkCache(address):
-            print('HIT {0:x}'.format(address))
-            return self.cache.getAddressValue(address)
-        else:
-            print('MISS {0:x}'.format(address))
+            print('HIT')
+            print('Value {0:x}'.format(self.cache.getAddressValue(address)))
 
+        else:
+            print('MISS')
             #Write Back to main Memory if current row is dirty
             if self.cache.isDirty(address):
-                print("CACHE DIRTY Writing back to MM")
+                # print("CACHE DIRTY Writing back to MM")
                 cacheBlock = self.cache.getBlock(address)
                 self.memory.writeBlock(cacheBlock)
-
             newRow = self.memory.getBlock(address)
             self.cache.insertBlock(newRow)
+            print('Value {0:x}'.format(self.cache.getAddressValue(address)))
 
 
     def write(self, address, value):
@@ -36,23 +36,22 @@ class SystemMemoryManager(object):
         some level of error checking,
         address: Must be in the range of the current memeory
         value: can not be larger than 8 bits'''
-
+        print('\nWRITE {0:x}'.format(address))
         if self.cache.checkCache(address):
-            print('HIT {0:x}'.format(address))
+            print('HIT')
             self.cache.updateData(address, value)
+            print('Value {0:x}'.format(self.cache.getAddressValue(address)))
 
         else:
-            print('MISS {0:x}'.format(address))
-
+            print('MISS')
             #Write Back to main Memory if current row is dirty
             if self.cache.isDirty(address):
-                print("CACHE DIRTY Writing back to MM")
                 cacheBlock = self.cache.getBlock(address)
                 self.memory.writeBlock(cacheBlock)
-
             newRow = self.memory.getBlock(address)
             self.cache.insertBlock(newRow)
             self.cache.updateData(address, value)
+            print('Value {0:x}'.format(self.cache.getAddressValue(address)))
 
     def displayCache(self):
         '''As of wirting this i plan on just calling the cache __str__ method '''

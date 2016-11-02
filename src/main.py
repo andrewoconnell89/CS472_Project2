@@ -15,7 +15,14 @@ def main():
 
     runFromFile(smm, 'SampleInput.txt')
 
+
 def runFromFile(smm, fileName):
+    '''Takes the SystemMemoryManager object and file name to run
+    a prewritted set of commands
+
+    Input---
+        smm : SystemMemoryManager object
+        fileName : Name of file located in root directory '''
     #Test the Sample output
     with open(fileName, 'r') as f:
         cursor = str.strip(f.readline())
